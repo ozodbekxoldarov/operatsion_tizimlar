@@ -12,6 +12,8 @@
  *   uzbek_klaviatura status  -> ishlayaptimi yoki yo'qmi
  *   (Ctrl + Alt + Q ham to'xtatadi)
  *
+ * Yoki .exe ustiga ikki marta bosing: birinchi bosish yoqadi, keyingisi o'chiradi.
+ *
  * Kompilyatsiya:  gcc uzbek_klaviatura.c -o uzbek_klaviatura.exe
  */
 #define WIN32_LEAN_AND_MEAN
@@ -195,6 +197,24 @@ int main(int argc, char *argv[])
     SetConsoleOutputCP(CP_UTF8);               /* ğ ş harflari terminalda to'g'ri chiqishi uchun */
 
     if (argc < 2) {
+        /* Konsolda faqat bizning jarayon bo'lsa, demak .exe ustiga
+           ikki marta bosilgan (terminaldan emas). Unda yoqib/o'chiramiz. */
+        DWORD idlar[2];
+        if (GetConsoleProcessList(idlar, 2) == 1) {
+            FreeConsole();                     /* qora oynani yopamiz */
+            if (ishlayaptimi()) {
+                toxtatish();
+                MessageBoxW(NULL, L"Dastur to'xtatildi.", L"O'zbek klaviatura",
+                            MB_ICONINFORMATION);
+            } else {
+                boshlash();
+                MessageBoxW(NULL, L"Dastur ishga tushdi.\n\n"
+                            L"Alt + g / o / s / c  \x2192  \x011F \x00F6 \x015F \x00E7\n\n"
+                            L"O'chirish uchun .exe ga yana ikki marta bosing.",
+                            L"O'zbek klaviatura", MB_ICONINFORMATION);
+            }
+            return 0;
+        }
         printf("Foydalanish: uzbek_klaviatura start | stop | status\n");
         return 0;
     }
