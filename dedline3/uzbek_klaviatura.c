@@ -72,11 +72,21 @@ static LRESULT CALLBACK klaviatura_hook(int code, WPARAM wp, LPARAM lp)
         DWORD vk = k->vkCode;
 
         if (vk == VK_LMENU || vk == VK_RMENU || vk == VK_MENU) {
-            alt_bosilgan = bosildi;
-            /* Alt'ni allaqachon qo'yib yuborgan bo'lsak, haqiqiy qo'yishni yutamiz */
-            if (!bosildi && alt_qoyildi) {
-                alt_qoyildi = 0;
-                return 1;
+            if (bosildi) {
+                /* Alt ushlab turilsa, Windows "Alt bosildi" hodisasini takrorlaydi.
+                   Biz Alt'ni qo'yib yuborgan bo'lsak, bu takrorlarni tizimga
+                   o'tkazmaymiz, aks holda tizimda Alt bosilgan holda qotib qoladi. */
+                if (alt_bosilgan && alt_qoyildi)
+                    return 1;
+                alt_qoyildi = 0;               /* yangi bosish: eski holatni tozalash */
+                alt_bosilgan = 1;
+            } else {
+                alt_bosilgan = 0;
+                /* Alt'ni allaqachon qo'yib yuborgan bo'lsak, haqiqiy qo'yishni yutamiz */
+                if (alt_qoyildi) {
+                    alt_qoyildi = 0;
+                    return 1;
+                }
             }
         } else if (bosildi && alt_bosilgan) {
             int ctrl = GetAsyncKeyState(VK_CONTROL) & 0x8000;

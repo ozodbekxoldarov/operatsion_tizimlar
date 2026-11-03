@@ -29,6 +29,10 @@ uzbek_klaviatura stop     # to'xtaydi
 
 `uzbek_klaviatura.exe` ustiga **ikki marta bosing**: dastur yoqiladi va xabar oynasi chiqadi. Yana ikki marta bossangiz, dastur o'chadi.
 
+## Muammo bo'lsa
+
+Klaviatura g'alati ishlay boshlasa: `Ctrl + Alt + Q` bosing yoki `uzbek_klaviatura stop` bering (oxirgi chora: Task Manager'da `uzbek_klaviatura.exe` ni yoping), keyin Alt tugmasini bir marta bosib qo'yib yuboring.
+
 ## Qanday ishlaydi
 
 1. `SetWindowsHookEx(WH_KEYBOARD_LL, ...)`: OT har bir tugma bosilishini boshqa dasturlarga yetkazishdan oldin bizning funksiyamizga beradi.
