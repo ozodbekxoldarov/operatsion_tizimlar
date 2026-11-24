@@ -2,52 +2,52 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_LEN 256
+#define MAKS_UZUNLIK 256
 
-void remove_newline(char *s)
+void qator_oxirini_tozala(char *satr)
 {
-    size_t len = strlen(s);
-    if (len > 0 && s[len - 1] == '\n') {
-        s[len - 1] = '\0';
+    size_t uzunlik = strlen(satr);
+    if (uzunlik > 0 && satr[uzunlik - 1] == '\n') {
+        satr[uzunlik - 1] = '\0';
     }
 }
 
-char *double_chars(const char *s)
+char *ikki_martalash(const char *satr)
 {
-    size_t len = strlen(s);
-    char *result = malloc(2 * len + 1);
-    if (result == NULL) {
+    size_t uzunlik = strlen(satr);
+    char *natija = malloc(2 * uzunlik + 1);
+    if (natija == NULL) {
         return NULL;
     }
 
     size_t j = 0;
-    for (size_t i = 0; i < len; i++) {
-        result[j++] = s[i];
-        result[j++] = s[i];
+    for (size_t i = 0; i < uzunlik; i++) {
+        natija[j++] = satr[i];
+        natija[j++] = satr[i];
     }
-    result[j] = '\0';
-    return result;
+    natija[j] = '\0';
+    return natija;
 }
 
 int main(void)
 {
-    char s[MAX_LEN];
+    char satr[MAKS_UZUNLIK];
 
     printf("Satr kiriting: ");
-    if (fgets(s, sizeof(s), stdin) == NULL) {
+    if (fgets(satr, sizeof(satr), stdin) == NULL) {
         printf("Satr o'qilmadi.\n");
         return 1;
     }
-    remove_newline(s);
+    qator_oxirini_tozala(satr);
 
-    char *result = double_chars(s);
-    if (result == NULL) {
+    char *natija = ikki_martalash(satr);
+    if (natija == NULL) {
         perror("malloc");
         return 1;
     }
 
-    printf("Natija: %s\n", result);
+    printf("Natija: %s\n", natija);
 
-    free(result);
+    free(natija);
     return 0;
 }

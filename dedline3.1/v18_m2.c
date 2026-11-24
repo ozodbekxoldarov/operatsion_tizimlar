@@ -2,72 +2,72 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_LEN 256
+#define MAKS_UZUNLIK 256
 
-void remove_newline(char *s)
+void qator_oxirini_tozala(char *satr)
 {
-    size_t len = strlen(s);
-    if (len > 0 && s[len - 1] == '\n') {
-        s[len - 1] = '\0';
+    size_t uzunlik = strlen(satr);
+    if (uzunlik > 0 && satr[uzunlik - 1] == '\n') {
+        satr[uzunlik - 1] = '\0';
     }
 }
 
-void free_lines(char **lines, int n)
+void satrlarni_tozala(char **satrlar, int n)
 {
     for (int i = 0; i < n; i++) {
-        free(lines[i]);
+        free(satrlar[i]);
     }
-    free(lines);
+    free(satrlar);
 }
 
-int find_longest(char **lines, int n)
+int eng_uzunini_top(char **satrlar, int n)
 {
-    int best = 0;
+    int eng_uzun = 0;
     for (int i = 1; i < n; i++) {
-        if (strlen(lines[i]) > strlen(lines[best])) {
-            best = i;
+        if (strlen(satrlar[i]) > strlen(satrlar[eng_uzun])) {
+            eng_uzun = i;
         }
     }
-    return best;
+    return eng_uzun;
 }
 
 int main(void)
 {
-    char buf[MAX_LEN];
+    char bufer[MAKS_UZUNLIK];
     int n;
 
     printf("Satrlar sonini kiriting (N): ");
-    if (fgets(buf, sizeof(buf), stdin) == NULL || sscanf(buf, "%d", &n) != 1 || n <= 0) {
+    if (fgets(bufer, sizeof(bufer), stdin) == NULL || sscanf(bufer, "%d", &n) != 1 || n <= 0) {
         printf("N noto'g'ri kiritildi.\n");
         return 1;
     }
 
-    char **lines = malloc(n * sizeof(char *));
-    if (lines == NULL) {
+    char **satrlar = malloc(n * sizeof(char *));
+    if (satrlar == NULL) {
         perror("malloc");
         return 1;
     }
 
     for (int i = 0; i < n; i++) {
         printf("%d-satr: ", i + 1);
-        if (fgets(buf, sizeof(buf), stdin) == NULL) {
-            buf[0] = '\0';
+        if (fgets(bufer, sizeof(bufer), stdin) == NULL) {
+            bufer[0] = '\0';
         }
-        remove_newline(buf);
+        qator_oxirini_tozala(bufer);
 
-        lines[i] = malloc(strlen(buf) + 1);
-        if (lines[i] == NULL) {
+        satrlar[i] = malloc(strlen(bufer) + 1);
+        if (satrlar[i] == NULL) {
             perror("malloc");
-            free_lines(lines, i);
+            satrlarni_tozala(satrlar, i);
             return 1;
         }
-        strcpy(lines[i], buf);
+        strcpy(satrlar[i], bufer);
     }
 
-    int idx = find_longest(lines, n);
+    int indeks = eng_uzunini_top(satrlar, n);
     printf("Eng uzun satr (%d-satr, %zu belgi): %s\n",
-           idx + 1, strlen(lines[idx]), lines[idx]);
+           indeks + 1, strlen(satrlar[indeks]), satrlar[indeks]);
 
-    free_lines(lines, n);
+    satrlarni_tozala(satrlar, n);
     return 0;
 }

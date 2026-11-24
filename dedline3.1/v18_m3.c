@@ -2,101 +2,101 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_LEN 256
+#define MAKS_UZUNLIK 256
 
-void remove_newline(char *s)
+void qator_oxirini_tozala(char *satr)
 {
-    size_t len = strlen(s);
-    if (len > 0 && s[len - 1] == '\n') {
-        s[len - 1] = '\0';
+    size_t uzunlik = strlen(satr);
+    if (uzunlik > 0 && satr[uzunlik - 1] == '\n') {
+        satr[uzunlik - 1] = '\0';
     }
 }
 
-void free_lines(char **lines, int n)
+void satrlarni_tozala(char **satrlar, int n)
 {
     for (int i = 0; i < n; i++) {
-        free(lines[i]);
+        free(satrlar[i]);
     }
-    free(lines);
+    free(satrlar);
 }
 
-char **read_lines(const char *filename, int *count)
+char **satrlarni_oqi(const char *fayl_nomi, int *soni)
 {
-    FILE *f = fopen(filename, "r");
-    if (f == NULL) {
-        perror(filename);
+    FILE *fayl = fopen(fayl_nomi, "r");
+    if (fayl == NULL) {
+        perror(fayl_nomi);
         return NULL;
     }
 
-    char **lines = NULL;
-    int capacity = 0;
+    char **satrlar = NULL;
+    int sigim = 0;
     int n = 0;
-    char buf[MAX_LEN];
+    char bufer[MAKS_UZUNLIK];
 
-    while (fgets(buf, sizeof(buf), f) != NULL) {
-        remove_newline(buf);
+    while (fgets(bufer, sizeof(bufer), fayl) != NULL) {
+        qator_oxirini_tozala(bufer);
 
-        if (n == capacity) {
-            int new_cap = (capacity == 0) ? 4 : capacity * 2;
-            char **tmp = realloc(lines, new_cap * sizeof(char *));
-            if (tmp == NULL) {
+        if (n == sigim) {
+            int yangi_sigim = (sigim == 0) ? 4 : sigim * 2;
+            char **vaqtincha = realloc(satrlar, yangi_sigim * sizeof(char *));
+            if (vaqtincha == NULL) {
                 perror("realloc");
-                free_lines(lines, n);
-                fclose(f);
+                satrlarni_tozala(satrlar, n);
+                fclose(fayl);
                 return NULL;
             }
-            lines = tmp;
-            capacity = new_cap;
+            satrlar = vaqtincha;
+            sigim = yangi_sigim;
         }
 
-        lines[n] = malloc(strlen(buf) + 1);
-        if (lines[n] == NULL) {
+        satrlar[n] = malloc(strlen(bufer) + 1);
+        if (satrlar[n] == NULL) {
             perror("malloc");
-            free_lines(lines, n);
-            fclose(f);
+            satrlarni_tozala(satrlar, n);
+            fclose(fayl);
             return NULL;
         }
-        strcpy(lines[n], buf);
+        strcpy(satrlar[n], bufer);
         n++;
     }
 
-    fclose(f);
-    *count = n;
-    return lines;
+    fclose(fayl);
+    *soni = n;
+    return satrlar;
 }
 
-int write_reversed(const char *filename, char **lines, int n)
+int teskari_yoz(const char *fayl_nomi, char **satrlar, int n)
 {
-    FILE *f = fopen(filename, "w");
-    if (f == NULL) {
-        perror(filename);
+    FILE *fayl = fopen(fayl_nomi, "w");
+    if (fayl == NULL) {
+        perror(fayl_nomi);
         return 1;
     }
 
     for (int i = n - 1; i >= 0; i--) {
-        fprintf(f, "%s\n", lines[i]);
+        fprintf(fayl, "%s\n", satrlar[i]);
     }
 
-    fclose(f);
+    fclose(fayl);
     return 0;
 }
 
 int main(void)
 {
     int n = 0;
-    char **lines = read_lines("input.txt", &n);
-    if (lines == NULL) {
+    char **satrlar = satrlarni_oqi("input.txt", &n);
+    if (satrlar == NULL) {
         printf("input.txt dan satr o'qilmadi.\n");
         return 1;
     }
 
-    if (write_reversed("reversed_lines.txt", lines, n) != 0) {
-        free_lines(lines, n);
+    if (teskari_yoz("reversed_lines.txt", satrlar, n) != 0) {
+        satrlarni_tozala(satrlar, n);
         return 1;
     }
 
     printf("%d ta satr teskari tartibda reversed_lines.txt ga yozildi.\n", n);
 
-    free_lines(lines, n);
+    satrlarni_tozala(satrlar, n);
     return 0;
 }
