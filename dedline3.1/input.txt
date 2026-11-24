@@ -1,0 +1,7 @@
+1. Operatsion tizimlar fani
+2. C tilida fayllar bilan ishlash
+3. fopen, fgets, fprintf, fclose
+4. malloc, realloc va free
+5. Dinamik massivlar
+6. Satrlar va belgilar
+7. Bu oxirgi satr
